@@ -3,7 +3,86 @@
 
 \begin{document}
 
-\paragraph{Half spaces}
+\paragraph{Learning Half spaces}\
+
+\textbf{Definitions}
+
+$$\mathcal{C}_{n,3} = \{ x \in \{ 0, 1, -1 \}^n \mid | \{ i \mid x_i \neq 0 \} | \leq 3 \}$$
+$$\mathcal{H}_{n,3} = \{ h_{w,b} : C_{n, 3} \mapsto \{ \pm 1\} \mid h_{w,b}(x) = sign( \langle w, x \rangle + b), w \in R^n, b \in R \}$$
+$$ Err_{D}(h) = Pr_{(x,y) \sim D} (h(x) \neq y)$$
+$$ Err_D(\mathcal{H}) = \min_{h \in \mathcal{H}} Err_D(h)$$
+
+\textbf{Learning algorithm} (for half-spaces):
+
+A learning algoritm $L$ maps samples to hypothesis. In the context of this paper the learning algorithm $L$, maps training sets/samples as follows: 
+
+$$L : (C_{n,3} \times \{ \pm 1 \} )^m \mapsto \mathcal{H}_{n,3}$$
+
+Notice that the output $L(S)$ of the learning algorithm is a hypothesis $\mathcal{H}_{n,3}$, i.e:
+
+$$L(S) \in \mathcal{H}_{n,3}$$
+We say $L$ learns $\mathcal{H}_{n,3}$ if for every distribution $D$ on $C_{n,3} \times \{ \pm 1 \}$ and samples $S$ of more than $m(n, \epsilon)$ i.i.d. examples from from $D$:
+
+$$ Pr_{S}[ Err_D(L(S) > Err_D(\mathcal{H}_{n,3}) + \epsilon ] < \frac{1}{10}$$
+
+We say that the learning algorithm is efficient if $L$ returns a hypothesis in $poly(m(n, \epsilon) )$ and the hypothesis can be evaluated in polynomial time.
+
+A n-variable 3CNF clause is a boolean formula of the form:
+
+$$C(x) = (-1)^{j_1}x_{i_1} \vee (-1)^{j_2}x_{i_2} \vee (-1)^{j_3}x_{i_3} $$
+
+A 3CNF formula is a boolean formula of the form:
+
+$$ \phi(x) = \wedge^m_{i=1} C_{i}(x) $$
+
+To denote this we use $3CNF_{n,m}$ when it has n variables and m clauses.
+
+Let $Val(\phi)$ denote the maximal fraction of clauses that can be simultaneously satisfied.
+
+If $Val(\phi) =  1$ then we say that $\phi$ is satisfiable.  
+
+Boolean formulas can be trivially transformed to formulas with $\{ \pm \}$ instead of $\{ 0,1 \}$ and majority operations.
+First the the majority function defined as follows:
+
+$$\forall (x_1, x_2, x_3) \in \{ \pm 1 \}^3, MAJ(x_1, x_2, x_3 ) := sign(x_1 + x_2 + x_3 )$$
+
+An n-variable 3CNF clauses C can be mapped to 3 majority (3MAJ) clauses using the formula:
+
+$$ C(x) = MAJ( (-1)^{j_1}x_{i_1} , (-1)^{j_2}x_{i_2} , (-1)^{j_3}x_{i_3} )$$
+
+An n-variable 3CNF formulas $\phi$ can be equivalently be expressed using 3MAJ formulas as follow:
+
+$$ \phi(x) = \wedge^m_{i=1} C_{i}(x)  = \Pi^m_{i=1} C_{i}(x) $$
+
+To denote this we use $3MAJ_{n,m}$ when it has n variables and m clauses.
+
+\textbf{Conjecture 2.2}: ($\mu$-R3SAT hardness assumption) $\forall \epsilon > 0, \forall \Delta > \Delta_o(\epsilon) $, there exists no efficient algorithm that $\epsilon$-refutes random 3CNF with ratio $\Delta \cdot n^{\mu}$  
+
+
+\textbf{Theorem 3.1 }: Let $0 \leq \mu \leq 0.5$. If the $\mu$-R3SAT hardness assumption (conjecture 2.2) is true, then there exists no efficient learning algorithm that learns the class $\mathcal{H}_{n,3}$ using $O \left(  \frac{n^{1 + \mu }}{\epsilon^2} \right)$ examples.
+
+To prove theorem 3.1 we will prove a stronger version of it. For that we will need to define:
+
+$$ \mathcal{H}^d_{n,m} = \{ h_{w,0} : C_{n, 3} \mapsto \{ \pm 1\} \mid h_{w,0}(x) = \langle w, x \rangle, w \in R^n, b = 0 \}$$
+
+Notice $\mathcal{H}^d_{n,m} \subset \mathcal{H}_{n,m}$, this fact is what makes theorem 3.2 stronger (and hence imply theorem 3.1):
+
+\textbf{Theorem 3.2 }: Under $\mu$-R3SAT hardness assumption, it is impossible to efficiently learn this subclass  $\mathcal{H}^d_{n,m}$ , using only $O \left(  \frac{n^{1 + \mu }}{\epsilon^2} \right)$.
+
+To do this we will show that its impossible to $\epsilon$-refute $3MAJ$ formulas (using the above number of samples) by reducing the task of refuting random 3MAJ formulas with linear number of clauses to the task of learning $ \mathcal{H}^d_{n,m} $. For this reduction, we will map every 3MAJ clause to two examples in $C_{n,3} \times \{ \pm 1 \}$. For every clause 3MAJ clause $ C(x) = MAJ( (-1)^{j_1}x_{i_1} , (-1)^{j_2}x_{i_2} , (-1)^{j_3}x_{i_3} )$ one can map it to an example $(x_k , y_k) \in C_{n , 3} \times \{ \pm 1\}$ by choosing $b \in \{ \pm 1\}$ at random and letting:
+
+$$(x_k, y_k) = b (\sum^3_{l=1} (-1)^{j_l} e_{i_l}, 1) \in (C_{n,3} \times \{ \pm 1 \})$$
+
+where $e_i$ are the usual standard basis vectors.
+Conceptually, we are simply using the indices of the boolean vector take part of the current 3MAJ formula to denote the non-zero relevant entries in the vector $x_k$. The vector $y_k$ is intended to indicate if the current clause is satisfied or not.
+Note that there is a bijection with vectors $w \in \{ \pm 1 \}^n $ to hyperplanes in $\mathcal{H}^d_{n,m}$. Hence, we will also map each vector $w \in\mathcal{H}^d_{n,m}$ to every possible assignment $\psi$ to the 3MAJ formula $\phi(x)$.
+
+
+
+
+
+
+
 
 
 
