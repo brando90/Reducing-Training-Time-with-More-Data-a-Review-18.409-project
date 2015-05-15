@@ -57,25 +57,41 @@ $$ \phi(x) = \wedge^m_{i=1} C_{i}(x)  = \Pi^m_{i=1} C_{i}(x) $$
 To denote this we use $3MAJ_{n,m}$ when it has n variables and m clauses.
 
 \textbf{Conjecture 2.2}: ($\mu$-R3SAT hardness assumption) $\forall \epsilon > 0, \forall \Delta > \Delta_o(\epsilon) $, there exists no efficient algorithm that $\epsilon$-refutes random 3CNF with ratio $\Delta \cdot n^{\mu}$  
-
-
+%%%% Theorem
 \textbf{Theorem 3.1 }: Let $0 \leq \mu \leq 0.5$. If the $\mu$-R3SAT hardness assumption (conjecture 2.2) is true, then there exists no efficient learning algorithm that learns the class $\mathcal{H}_{n,3}$ using $O \left(  \frac{n^{1 + \mu }}{\epsilon^2} \right)$ examples.
 
 To prove theorem 3.1 we will prove a stronger version of it. For that we will need to define:
-
 $$ \mathcal{H}^d_{n,m} = \{ h_{w,0} : C_{n, 3} \mapsto \{ \pm 1\} \mid h_{w,0}(x) = \langle w, x \rangle, w \in R^n, b = 0 \}$$
 
 Notice $\mathcal{H}^d_{n,m} \subset \mathcal{H}_{n,m}$, this fact is what makes theorem 3.2 stronger (and hence imply theorem 3.1):
 
 \textbf{Theorem 3.2 }: Under $\mu$-R3SAT hardness assumption, it is impossible to efficiently learn this subclass  $\mathcal{H}^d_{n,m}$ , using only $O \left(  \frac{n^{1 + \mu }}{\epsilon^2} \right)$.
 
-To do this we will show that its impossible to $\epsilon$-refute $3MAJ$ formulas (using the above number of samples) by reducing the task of refuting random 3MAJ formulas with linear number of clauses to the task of learning $ \mathcal{H}^d_{n,m} $. For this reduction, we will map every 3MAJ clause to two examples in $C_{n,3} \times \{ \pm 1 \}$. For every clause 3MAJ clause $ C(x) = MAJ( (-1)^{j_1}x_{i_1} , (-1)^{j_2}x_{i_2} , (-1)^{j_3}x_{i_3} )$ one can map it to an example $(x_k , y_k) \in C_{n , 3} \times \{ \pm 1\}$ by choosing $b \in \{ \pm 1\}$ at random and letting:
+%%%% PROOF SKETCH
+Proof Sketch:
+
+To show that its impossible to learn $\mathcal{H}^d_{n,m}$ (using only $O \left(  \frac{n^{1 + \mu }}{\epsilon^2} \right)$), we will reduce the problem of $\epsilon$-refuting $3MAJ$ formulas to the problem of learning $\mathcal{H}^d_{n,m}$ with $O \left(  \frac{n^{1 + \mu }}{\epsilon^2} \right)$. With this reduction, we will be able to show that if such a learning algorithm $L$ existed, then we could learn $\mathcal{H}^d_{n,m}$ and hence, construct an algorithm that is able to $\epsilon$-refute $3MAJ$ formulas efficiently.
+
+For this reduction to work we will need the following steps:
+
+\textbf{step1)} For this reduction, we will map every 3MAJ clause to two examples in $C_{n,3} \times \{ \pm 1 \}$. For every clause 3MAJ clause $ C(x) = MAJ( (-1)^{j_1}x_{i_1} , (-1)^{j_2}x_{i_2} , (-1)^{j_3}x_{i_3} )$ one can map it to an example $(x_k , y_k) \in C_{n , 3} \times \{ \pm 1\}$ by choosing $b \in \{ \pm 1\}$ at random and letting:
 
 $$(x_k, y_k) = b (\sum^3_{l=1} (-1)^{j_l} e_{i_l}, 1) \in (C_{n,3} \times \{ \pm 1 \})$$
 
 where $e_i$ are the usual standard basis vectors.
-Conceptually, we are simply using the indices of the boolean vector take part of the current 3MAJ formula to denote the non-zero relevant entries in the vector $x_k$. The vector $y_k$ is intended to indicate if the current clause is satisfied or not.
-Note that there is a bijection with vectors $w \in \{ \pm 1 \}^n $ to hyperplanes in $\mathcal{H}^d_{n,m}$. Hence, we will also map each vector $w \in\mathcal{H}^d_{n,m}$ to every possible assignment $\psi$ to the 3MAJ formula $\phi(x)$.
+Conceptually, we are simply using the indices of the boolean vector take part of the current 3MAJ formula to denote the non-zero relevant entries in the vector $x_k$.
+The vector $y_k$ is intended to indicate if the current clause is satisfied or not.
+
+\textbf{step2)} Apart from mapping each clause $C(x)$ we will also map every possible $w \in\mathcal{H}^d_{n,m}$ to a possible (boolean) assignment $\psi $ to the 3MAJ formula $\phi(x)$. 
+To do this we will take advantage that $w \in \{ \pm 1 \}^n $ and that there is a bijection with vectors $w \in \{ \pm 1 \}^n $ to hyperplanes in $\mathcal{H}^d_{n,m}$.
+
+For this proof to work the following fact is crucial:
+
+\textbf{step3} Claim: If $w \in \{ \pm 1 \}^n $ and its corresponding hypothesis is $h_{\psi, 0} (x) = sign ( \langle \psi , x \rangle )$, then $h_{\psi, 0} (x_k) = y_k$ if and only if $\psi$ satisfies $C_k$. 
+
+Sketch proof: 
+
+This fact is nearly immediate because we constructed $x_k$ to be the "coefficients" of the majority formula but without the actual boolean values $x$. Therefore one can appreciate that the inner product  $ \langle \psi , x \rangle $ simply linearly combines the coefficients of 3MAJ (encoded in $x_k$) and with the satisfying assigning $\psi \in \{ \pm 1\}^n$. Since $y_k$ is always flipped depending whether $b$ is 1 or -1, $y_k$ matches $\langle \psi , x \rangle $ if and only if $C(x)$ is satisfied.  
 
 
 
