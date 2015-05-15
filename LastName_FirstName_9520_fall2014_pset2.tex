@@ -56,7 +56,8 @@ $$ \phi(x) = \wedge^m_{i=1} C_{i}(x)  = \Pi^m_{i=1} C_{i}(x) $$
 
 To denote this we use $3MAJ_{n,m}$ when it has n variables and m clauses.
 
-\textbf{Conjecture 2.2}: ($\mu$-R3SAT hardness assumption) $\forall \epsilon > 0, \forall \Delta > \Delta_o(\epsilon) $, there exists no efficient algorithm that $\epsilon$-refutes random 3CNF with ratio $\Delta \cdot n^{\mu}$  
+\textbf{Conjecture 2.2}: ($\mu$-R3SAT hardness assumption) $\forall \epsilon > 0, \forall \Delta > \Delta_o(\epsilon) $, there exists no efficient algorithm that $\epsilon$-refutes random 3CNF with ratio $\Delta \cdot n^{\mu}$.
+ 
 %%%% Theorem
 \textbf{Theorem 3.1 }: Let $0 \leq \mu \leq 0.5$. If the $\mu$-R3SAT hardness assumption (conjecture 2.2) is true, then there exists no efficient learning algorithm that learns the class $\mathcal{H}_{n,3}$ using $O \left(  \frac{n^{1 + \mu }}{\epsilon^2} \right)$ examples.
 
@@ -74,7 +75,7 @@ To show that its impossible to learn $\mathcal{H}^d_{n,m}$ (using only $O \left(
 
 For this reduction to work we will need the following steps:
 
-\textbf{step1)} For this reduction, we will map every 3MAJ clause to two examples in $C_{n,3} \times \{ \pm 1 \}$. For every clause 3MAJ clause $ C(x) = MAJ( (-1)^{j_1}x_{i_1} , (-1)^{j_2}x_{i_2} , (-1)^{j_3}x_{i_3} )$ one can map it to an example $(x_k , y_k) \in C_{n , 3} \times \{ \pm 1\}$ by choosing $b \in \{ \pm 1\}$ at random and letting:
+\textbf{step1)} For this reduction, we will map every 3MAJ clause to two examples in $C_{n,3} \times \{ \pm 1 \}$. Since 3MAJ are just linear combinations of boolen values, we will just indicate the coefficients in the $x_k \in C_{n,3}$ vector. More precisely, for every clause 3MAJ clause $ C(x) = MAJ( (-1)^{j_1}x_{i_1} , (-1)^{j_2}x_{i_2} , (-1)^{j_3}x_{i_3} )$ one can map it to an example $(x_k , y_k) \in C_{n , 3} \times \{ \pm 1\}$ by choosing $b \in \{ \pm 1\}$ (at random) and letting:
 
 $$(x_k, y_k) = b (\sum^3_{l=1} (-1)^{j_l} e_{i_l}, 1) \in (C_{n,3} \times \{ \pm 1 \})$$
 
@@ -87,12 +88,19 @@ To do this we will take advantage that $w \in \{ \pm 1 \}^n $ and that there is 
 
 For this proof to work the following fact is crucial:
 
-\textbf{step3} Claim: If $w \in \{ \pm 1 \}^n $ and its corresponding hypothesis is $h_{\psi, 0} (x) = sign ( \langle \psi , x \rangle )$, then $h_{\psi, 0} (x_k) = y_k$ if and only if $\psi$ satisfies $C_k$. 
+\textbf{step3} Claim: If $\psi \in \{ \pm 1 \}^n $ and its corresponding hypothesis are $h_{\psi, 0} (x) = sign ( \langle \psi , x \rangle )$, then $h_{\psi, 0} (x_k) = y_k$ if and only if $\psi$ satisfies $C_k$. 
 
 Sketch proof: 
 
 This fact is nearly immediate because we constructed $x_k$ to be the "coefficients" of the majority formula but without the actual boolean values $x$. Therefore one can appreciate that the inner product  $ \langle \psi , x \rangle $ simply linearly combines the coefficients of 3MAJ (encoded in $x_k$) and with the satisfying assigning $\psi \in \{ \pm 1\}^n$. Since $y_k$ is always flipped depending whether $b$ is 1 or -1, $y_k$ matches $\langle \psi , x \rangle $ if and only if $C(x)$ is satisfied.  
 
+\textbf{step4} Given $\phi \in 3MAJ_{n, \Delta n^{1 + \mu}}$ (and for large enough $\Delta$) consisting of 3MAJ clauses $C_1, ..., C_{\Delta n^{1 + \mu}}$ we will create a sample set S consisting of $\Delta n^{1 + \mu}$ examples $(x_k, y_k)$ for each clause $C_k$ as described in step 2. Now given these samples we will choose a random subset $S_1$ of size $O(\frac{n^{1+\mu}}{\epsilon} )$. Let the empirical distribution induced by choosing $(C_{n,3} \times \{ \pm 1\})$ from $\phi$ be $D$. Let the learned hypothesis be denoted by $L(S)$.
+
+Now with these ingredients we can use the learned hypothesis $L(S)$ to, to see what fraction of clauses are actually satisfiable or not (i.e. which are random). This is equivalent to constructing an algorithm A that reliable refutes $\phi$ formulas.
+
+If $\phi$ is nearly satisfiable, i.e. $Val(\phi) \geq 1 - \epsilon$, then, most of the clauses that were mapped to $(x_k, y_k)$ will have a vector $x_k$ that is satisfiable and hence, matches $y_k$. If this is the case then $L(S)$ will get most of its predictions correct (with high probability, since our learning algorithm is PAC learnable and only learns successfully with high probability). Therefore $ Err_{D}(L(S)) $ will be small w.h.p. If this is the case our algorithm will return "exceptional" (and its likely to be satisfiable).
+
+On the other hand, if $\phi$ is random, then no algorithm can learn $\phi$. Why? Well, if $\phi$ is random then for every $(x_k, y_k)$, $y_k$ will be a Bernoulli r.v. with parameter $\frac{1}{2}$ m independent of $x_k$.
 
 
 
