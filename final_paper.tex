@@ -2,7 +2,7 @@
 \usepackage{parskip}
 \usepackage[top=1in, left=1in, right=1in, bottom=1in]{geometry}
 \usepackage{amsmath}
-\package{graphix}
+\package{graphics}
 \usepackage{titling}
 
 \title{Examples of Reducing Training Time\\ with More Data}
@@ -225,11 +225,11 @@ This fact is nearly immediate because we constructed $x_k$ to correspond to the 
 
 Now with these ingredients we can use the learned hypothesis $L(S)$ to see what fraction of clauses are actually satisfiable or random. This is equivalent to constructing an algorithm A that reliable refutes $\phi$ formulas.
 
-If $\phi$ is nearly satisfiable, i.e. $Val(\phi) \geq 1 - \epsilon$, then, most of the clauses that were mapped to $(x_k, y_k)$ will have a vector $x_k$ that is satisfiable and hence, matches $y_k$. If this is the case then $L(S)$ will get most of its predictions correct (with high probability, since our learning algorithm is PAC learnable and only learns successfully with high probability). Therefore $ Err_{D}(L(S)) $ will be small w.h.p. If this is the case our algorithm will return "exceptional" (and its likely to be satisfiable).
+If $\phi$ is nearly satisfiable, i.e. $Val(\phi) \geq 1 - \epsilon$, then, most of the clauses that were mapped to $(x_k, y_k)$ will have a vector $x_k$ that is satisfiable and hence, matches $y_k$. If this is the case then $L(S)$ will get most of its predictions correct i.e. most of its $sign(\langle \psi , x_k \rangle)$  will match $y_k$ . Since $L$ is PAC with only happens with high probability (w.h.p). Therefore $ Err_{D}(L(S)) $ will be small w.h.p. When his is the case our algorithm (for refuting 3MAJ formulas) should will return \textit{exceptional} (and its likely to be satisfiable).
 
-On the other hand, if $\phi$ is random, then no algorithm can learn $\phi$. Why? Well, if $\phi$ is random then for every $(x_k, y_k)$, $y_k$ will be a Bernoulli r.v. with parameter $\frac{1}{2}$, independent of $x_k$. Since the instances is basically random and the algorithm was only provided with $O(\frac{n^{1+\mu}}{\epsilon^2} )$, the learning algorithm will not see most of the clauses and therefore, since its seeing something that is random by change, will produce a hypothesis that is independent of its observations. Since these clauses are random, h is likely to make a mistake on about half of the clauses. Therefore, $Err_{D}(L(S))$ will be close to 1/2 (considered "large", i.e. it makes a large mistake). Therefore, output "typical".
+On the other hand, if $\phi$ is random, then no algorithm can learn $\phi$. Why? Well, if $\phi$ is random then for every $(x_k, y_k)$, $y_k$ will be a Bernoulli r.v. with parameter $\frac{1}{2}$, independent of $x_k$. Since the instances is basically random and the algorithm was only provided with $O(\frac{n^{1+\mu}}{\epsilon^2} )$, the learning algorithm will not see most of the clauses and therefore, since its seeing something that is random, it will produce a hypothesis that is independent of its observations. Since these clauses are random, h is likely to make a mistake on about half of the clauses. Therefore, $Err_{D}(L(S))$ will be close to $\frac{1}{2}$ . This considered large error large mistake. So when the error is large, our refuting algorithm returns \textit{typical}.
 
-Therefore, in summary, if $Err_{D}(L(S))$ is large output "typical", otherwise, if the error $Err_{D}(L(S))$ is small output "exceptional".
+Therefore, in summary, if $Err_{D}(L(S))$ is large output \textit{typical\textit{, otherwise, if the error $Err_{D}(L(S))$ is small output \textit{exceptional}.
 
 Therefore, we have constructed an efficient algorithm with small sample complexity that $\epsilon$-refutes 3MAJ formulas, which should not be possible under conjecture 2.2.
 
